@@ -67,10 +67,10 @@ Now suppose I want penguins that weigh less than like 3000 g (3kg) only. Since t
 
 ```{r}
 
-
 new_pen_light<- filter(new_pen, body_mass_kg <3 )
 
 glimpse(new_pen_light)
+
 ```
 
 
@@ -85,18 +85,43 @@ Take a look at this [cheat sheet](https://rstudio.com/wp-content/uploads/2015/03
 
 ## 2.1 General format of ggplot
 
-The general format of ggplot is that we call some generic function, then we can just build on it by (literally) adding to it other components. I will go over one of the problems from the worksheet
+The general format of ggplot is that we call some generic function, then we can just build on it by (literally) adding to it other components. Now we always start with the base ggplot function which has two main inputs the dataframe and then the aesthetic. ggplot is extremely flexible and I can't begin to scratch the surface of what you can do here so take a look at some other examples or the cheat sheet.
+
+Suppose I want a histogram of penguins bill length in mm. I tell ggplot to look at my dataframe penguins and then I tell it to look for a specific column by its column name. Note that I don't have to subset my dataframe at all before this if I want to use entire columns, no matter how many other columns ggplot only looks at the ones I tell it to.
+
+```{r}
+ggplot(penguins, aes(x=bill_length_mm))
+```
+
+So R here has outputted nothing because I have told it only what the data frame and the column I want inputted is but I haven't specified which type of plot I want. So my next line I literally add onto it to tell R to make a histogram
+
+```{r}
+ggplot(penguins, aes(x=bill_length_mm)) +
+  geom_histogram() # this is the line that tells it to make a histogram
+```
+
+
+So R has made a histogram here but notice that we don't have density on the y axis we just have counts which is not what we usually want, so we can add another argument to aes that specifically tells it to use the density on the y axis.
+
+
+```{r}
+ggplot(penguins, aes(x=bill_length_mm, y=..density..)) +
+  geom_histogram() # this is the line that tells it to make a histogram
+```
+
+
+Now we have a histogram like we want it. I will add a title, change the theme and change the axis titles and we can be done for now it's really that simple.
+
+```{r}
+ggplot(penguins, aes(x=bill_length_mm, y=..density..)) +
+  geom_histogram() + # this is the line that tells it to make a histogram 
+  xlab("Bill length in mm")+ # changing the x axis label
+  ggtitle("Penguin bill length Histogram")+ # adding the title
+  theme_bw() # changing the theme for fun 
 
 
 
-
-
-
-
-
-
-
-
+```
 
 
 
