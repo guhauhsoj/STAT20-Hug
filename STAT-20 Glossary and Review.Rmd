@@ -1,0 +1,106 @@
+---
+title: "A continuing overview of STAT 20 R"
+author: "JE Hug"
+date: "9/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Welcome to this document created by Josh Hug, one of the GSI's for STAT 20. This document will try and keep up with our R progress as we go on and I will add in depth (time permitting) explanations of what we are doing as I go on. Remember to check [github](https://github.com/guhauhsoj/STAT20-Hug) for the latest updates to this document as it progresses!
+
+
+A generic glossary of R commands that we have used so far.
+
+
+```{r, message=FALSE}
+# these are the packages we are using so far
+
+library(dplyr)
+library(ggplot2)
+```
+
+I'll begin with some simple use of the main dplyr functions we use, on the palmer penguins data set (make sure to install it if you don't have it yet). I prefer using this dataset over something like iris due to the fact that while iris is a classic dataset, it was compiled by Ronald Fisher (a prominent eugenicist) and published in a eugenics journal originally. This dataset provides a nice alternative with similar properites. 
+
+
+# 1 Filter, Select, Mutate Basics
+
+The key facts here are to use select if we want 
+
+```{r}
+
+# Here I will use the palmer penguins data set
+
+# if you don't have it installed
+
+# install.packages("palmerpenguins") 
+
+library(palmerpenguins) # where this data set comes from
+
+
+glimpse(penguins) # a nice function to take an easy look at the data
+
+```
+
+Suppose I wanted to make a new column bill_length_cm and body_mass_kg (where I convert units into cm and kg respectively)
+
+We can use mutate to add a new column as some function of another column
+
+
+```{r}
+
+
+new_pen <- mutate(penguins, bill_length_cm = bill_length_mm / 10, body_mass_kg = body_mass_g / 1000 )
+
+glimpse(new_pen)
+
+
+```
+
+Now suppose I want penguins that weigh less than like 3000 g (3kg) only. Since this is subsetting over rows with a specific condition we use the filter function from dplyr.
+
+
+
+```{r}
+
+
+new_pen_light<- filter(new_pen, body_mass_kg <3 )
+
+glimpse(new_pen_light)
+```
+
+
+
+
+
+# 2 Histograms in R
+
+Take a look at this [cheat sheet](https://rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf), you're probably extremely overwhelmed by this and personally I don't know what at least half of the stuff on this page does but it will save you a lot of time from googling. There are actually [cheat sheets](https://rstudio.com/resources/cheatsheets/) for most tidyverse (what these packages are a part of) packages so you can check out ones for dplyr and such.
+
+
+
+## 2.1 General format of ggplot
+
+The general format of ggplot is that we call some generic function, then we can just build on it by (literally) adding to it other components. I will go over one of the problems from the worksheet
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
