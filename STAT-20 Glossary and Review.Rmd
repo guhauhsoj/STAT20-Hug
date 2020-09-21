@@ -126,7 +126,120 @@ ggplot(penguins, aes(x=bill_length_mm, y=..density..)) +
 
 
 
+# 3 The Rep function and sampling
 
+## 3.1 A simple sampling example
+
+Now R is made for statistics and it has amazing random sampling functionality. If you need to sample from something oftentimes you can. Sampling is very important in any statistical practice since it allows us to generate fake data. When I say sampling I essentially mean simulating data. For instance I can simulate a coin toss many times. Let 1 denote heads and 0 denote tails.
+
+
+
+```{r}
+coin <- c(0,1)
+```
+
+From now on for reproducibility I will set a seed (what this does is allows for you to get the exact same random results as I get when you run these functions).
+
+```{r}
+set.seed(11)
+```
+
+
+
+My coin here is simply a vector with a 0 and a 1. I now need a function to randomly pick one of those with equal probability, This is the sample function
+
+```{r}
+sample(coin ,size=1)
+```
+
+So I have drawn heads here, but this is slow for me to run this manually so many times! This is what the size option is for. Let's say I wanted to flip 100 coins.
+
+```{r, error=TRUE}
+sample(coin, size=100)
+```
+
+We've received an error that says "cannot take a sample larger than the population when `replace = FALSE`. This is because what R does by default is that it treats your vector like a hat we're pulling papers out of. First it goes in and pulls out a random entry from the vector (in our case this was the 1), but by default it doesn't put this back into the hat, so then the next draw from the vector hat is whatever is left which in our case is just the 0. Finally on the third draw there are no numbers left in the hat to draw from so R spits out an error. We want R to put the papers back into the hat as if we are flipping the coin brand new. We can do this with the `replace=TRUE` argument.
+
+
+```{r}
+flips<-sample(coin, size=100, replace=TRUE)
+flips
+```
+
+
+So we've now received our coin draws. Hopefully since we know this is a fair coin (why?), we can assume that we will have about 50 heads. I can just sum to check
+
+```{r}
+sum(flips)
+```
+
+
+That's pretty close to 50. In additon we can see the proportion of heads by dividing by the length.
+
+```{r}
+sum(flips)/length(flips)
+```
+
+
+An important thing to note is that this is exactly the same as taking the mean which we define as the sum of all our observations divided by the length
+
+```{r}
+mean(flips)
+```
+
+
+## 3.2 More complicated sampling with rep
+
+Suppose I wanted to flip a coin with probability 1/56 of landing on heads. We can make this with a vector of 55 zeros and a single one. Note that in defining `weird_coin` I use rep, because I'm putting the same value so many times I don't want to write it out so I tell with `rep(0,55)` give me a vector with 55 zeros then with `c(rep(0,55),1)` I append a single one to the new vector.
+
+```{r}
+weird_coin <- c(rep(0,55),1)
+```
+
+
+
+So here I calculate the mean of this (again the same as the proportion as shown above), this should be fairly close to 1/56
+
+
+```{r}
+close<-mean(sample(weird_coin,1000,replace=TRUE))
+
+close-(1/56)
+
+```
+It is pretty close. \ 
+
+Someone asked about flipping tails rather than heads well in this case if I made the proability of heads 1, I can just do $1-P(\text{heads})$ (the complement rule) or I could replace the vector with the complementary vector. This is just we switch the ones and zeroes.
+
+```{r}
+weird_coin_tails <- 1-weird_coin # Why does this work?
+
+close_tails<-mean(sample(weird_coin_tails,1000,replace=TRUE))
+
+close_tails-(1-(1/56))
+
+```
+
+Again this is pretty close to what we'd expect it to be.
+
+## 3.3 an extension of what we know (simulating things we don't know the answer to)
+
+
+
+
+
+
+Sampling is a rather simple function but we can sometimes make it cater to some more complicated problems however almost all of them can essentially be boiled down to coin flips of some kind. For instance on a previous homework we were mostly doing simulations to confirm something we already knew. Here is an example of simulating with sampling to show something more complicated. All of this can be solved by hand but would be tedious. Don't worry if you don't understand the coding here (in fact its coded rather poorly by me) but this is is trying to see the probability of rolling three die and seeing the probability of getting a dice roll 10 or higher. Inside of the for loop is what is important, I'm sampling three draws with replacement from our dice then summing them together. I am then adding these sums to a vector. After this I take the mean of the number of times the sum was greater than 10. This should approximate the probabilty of rolling 3 dice and having a sum greater than 10. (this is mathematically supported by something called the law of large numbers).
+ 
+```{r}
+dice<- c(1:6)
+
+z <- replicate(100000,sum(sample(dice,replace=TRUE,size=3)))
+
+
+mean(z>=10)
+
+```
 
 
 
