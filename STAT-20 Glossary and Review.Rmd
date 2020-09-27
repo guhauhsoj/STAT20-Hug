@@ -24,7 +24,7 @@ library(dplyr)
 library(ggplot2)
 ```
 
-I'll begin with some simple use of the main dplyr functions we use, on the palmer penguins data set (make sure to install it if you don't have it yet). I prefer using this dataset over something like iris due to the fact that while iris is a classic dataset, it was compiled by Ronald Fisher (a prominent eugenicist) and published in a eugenics journal originally. This dataset provides a nice alternative with similar properites. 
+I'll begin with some simple use of the main dplyr functions we use, on the palmer penguins data set (make sure to install it if you don't have it yet). I prefer using this dataset over something like iris due to the fact that while iris is a classic dataset, it was compiled by Ronald Fisher (a fervent eugenicist) and published in a eugenics journal originally. This dataset provides a nice alternative with similar properites. 
 
 
 # 1 Filter, Select, Mutate Basics
@@ -243,4 +243,72 @@ mean(z>=10)
 
 
 
+# 4 Probability
 
+## 4.1 A brief introduction
+
+I will assume knowledge of basic probability rules learned in lecture such as multiplication rule and addition rule. Key among these is the definition of independence which I will emphasize here. Denote $$P(A \text{ and } B) \equiv P(A,B)$$. Recall that two events $A,B$ are independent if and only if
+
+\begin{align*}
+P(A,B)&=P(A)P(B)
+\end{align*}
+
+Suppose that $P(A) \neq 0$. We know by the multiplication rule that 
+
+\begin{align*}
+P(A,B)&=P(B|A)P(A)
+\end{align*}
+
+Combining these two facts we see that 
+
+
+
+\begin{align*}
+P(B|A)P(A)&=P(B)P(A))\\
+P(B|A)&=P(B)
+\end{align*}
+
+
+which can be interpreted as the fact that knowing $A$ has no effect on the probability of $B$ happening! 
+
+
+## 4.2 Binomial Distribution
+
+The easiest way to think of the binomial distribution is that it is simply a sum of independent coin flips. Problems solved with this distribution are of the form "What is the probability of getting 6 heads in 10 coin flips". Let $X$ be the sum of the results of $n$ coin flips each with probability of heads being $p$. Then we say $X\thicksim \text{binomial}(n,p)$ which is read that $X$ has the probability distribution binomial with parameters $n$ and $p$. We can then compute the probability that  $X=k$ (the probability of $k$ heads in $n$ tosses with each toss being independently heads with probability $p$), written $P(X=k)$. We have that 
+
+$$P(X=k)= \binom{n}{k}p^{k}(1-p)^{n-k}$$
+Note that the $p^{k}(1-p)^{n-k}$ is simply the probability of having the heads show up in one specific spot within the $n$ tosses. The $\binom{n}{k}$ accounts for the other spots we can put the successful tosses. Therefore the binomial distribution is both an application of multiplication and the addition rule with both independence and mutually exclusive events (Don't worry if you don't understand this).
+
+
+## 4.3 Computing binomial probabilities in R
+
+The `dbinom` function in R evaluates the binomial formula above it takes in arguments `x`,`size` and `prob`. For our purposes `x` refers to $k$, `size` refers to $n$ and `prob` refers to $p$.
+
+So if I wanted the probability of seeing 5 heads in 10 fair coin tosses I would evaluate
+
+```{r}
+
+
+dbinom(x=5,size=10,prob=1/2)
+
+```
+
+The `choose` function on the other hand simply evaluates $\binom{n}{k}=\frac{n!}{(n-k)!k!}$ (The function takes arguments `n` and `k` as in the formula). So if I wanted to evaluate the same probability I could do:
+
+```{r}
+# the same probability as above
+
+choose(10,5) * (0.5)^(5) * (1-0.5)^(10-5)
+
+```
+
+
+This is clearly more tedious and the choose function should really only be used if you need to use choose specifically.
+
+### An interlude on the binomial coefficient
+
+$\binom{n}{k} \equiv \frac{n!}{(n-k)!k!}$ read "n choose k" is a special value in combinatorics which is the number of ways to choose an unordered subset of $k$ elements from a set of size $n$. For instance the number of teams of 3 people I can make from 9 people total is $\binom{9}{3}=84$ (check with R!). 
+
+# 5 R Markdown 
+
+R Markdown is one of my favorite tools. If you've been to my section or to my office hours you've seen me use it since I don't usually code within R scripts. In fact this document is written in R markdown. Working within chunks allows for easily organized code and reproducibility. In addition all the math here is embedded via LaTex, a very popular way to type complicated math. As usual I recommend never working in the console except for specific instances of execution of R code.

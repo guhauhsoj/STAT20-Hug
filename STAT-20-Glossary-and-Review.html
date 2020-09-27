@@ -375,7 +375,7 @@ summary {
 
 library(dplyr)
 library(ggplot2)</code></pre>
-<p>I’ll begin with some simple use of the main dplyr functions we use, on the palmer penguins data set (make sure to install it if you don’t have it yet). I prefer using this dataset over something like iris due to the fact that while iris is a classic dataset, it was compiled by Ronald Fisher (a prominent eugenicist) and published in a eugenics journal originally. This dataset provides a nice alternative with similar properites.</p>
+<p>I’ll begin with some simple use of the main dplyr functions we use, on the palmer penguins data set (make sure to install it if you don’t have it yet). I prefer using this dataset over something like iris due to the fact that while iris is a classic dataset, it was compiled by Ronald Fisher (a fervent eugenicist) and published in a eugenics journal originally. This dataset provides a nice alternative with similar properites.</p>
 <div id="filter-select-mutate-basics" class="section level1">
 <h1>1 Filter, Select, Mutate Basics</h1>
 <p>The key facts here are to use select if we want</p>
@@ -525,6 +525,52 @@ z &lt;- replicate(100000,sum(sample(dice,replace=TRUE,size=3)))
 mean(z&gt;=10)</code></pre>
 <pre><code>## [1] 0.62501</code></pre>
 </div>
+</div>
+<div id="probability" class="section level1">
+<h1>4 Probability</h1>
+<div id="a-brief-introduction" class="section level2">
+<h2>4.1 A brief introduction</h2>
+<p>I will assume knowledge of basic probability rules learned in lecture such as multiplication rule and addition rule. Key among these is the definition of independence which I will emphasize here. Denote <span class="math display">\[P(A \text{ and } B) \equiv P(A,B)\]</span>. Recall that two events <span class="math inline">\(A,B\)</span> are independent if and only if</p>
+<p><span class="math display">\[\begin{align*}
+P(A,B)&amp;=P(A)P(B)
+\end{align*}\]</span></p>
+<p>Suppose that <span class="math inline">\(P(A) \neq 0\)</span>. We know by the multiplication rule that</p>
+<p><span class="math display">\[\begin{align*}
+P(A,B)&amp;=P(B|A)P(A)
+\end{align*}\]</span></p>
+<p>Combining these two facts we see that</p>
+<p><span class="math display">\[\begin{align*}
+P(B|A)P(A)&amp;=P(B)P(A))\\
+P(B|A)&amp;=P(B)
+\end{align*}\]</span></p>
+<p>which can be interpreted as the fact that knowing <span class="math inline">\(A\)</span> has no effect on the probability of <span class="math inline">\(B\)</span> happening!</p>
+</div>
+<div id="binomial-distribution" class="section level2">
+<h2>4.2 Binomial Distribution</h2>
+<p>The easiest way to think of the binomial distribution is that it is simply a sum of independent coin flips. Problems solved with this distribution are of the form “What is the probability of getting 6 heads in 10 coin flips”. Let <span class="math inline">\(X\)</span> be the sum of the results of <span class="math inline">\(n\)</span> coin flips each with probability of heads being <span class="math inline">\(p\)</span>. Then we say <span class="math inline">\(X\thicksim \text{binomial}(n,p)\)</span> which is read that <span class="math inline">\(X\)</span> has the probability distribution binomial with parameters <span class="math inline">\(n\)</span> and <span class="math inline">\(p\)</span>. We can then compute the probability that <span class="math inline">\(X=k\)</span> (the probability of <span class="math inline">\(k\)</span> heads in <span class="math inline">\(n\)</span> tosses with each toss being independently heads with probability <span class="math inline">\(p\)</span>), written <span class="math inline">\(P(X=k)\)</span>. We have that</p>
+<p><span class="math display">\[P(X=k)= \binom{n}{k}p^{k}(1-p)^{n-k}\]</span> Note that the <span class="math inline">\(p^{k}(1-p)^{n-k}\)</span> is simply the probability of having the heads show up in one specific spot within the <span class="math inline">\(n\)</span> tosses. The <span class="math inline">\(\binom{n}{k}\)</span> accounts for the other spots we can put the successful tosses. Therefore the binomial distribution is both an application of multiplication and the addition rule with both independence and mutually exclusive events (Don’t worry if you don’t understand this).</p>
+</div>
+<div id="computing-binomial-probabilities-in-r" class="section level2">
+<h2>4.3 Computing binomial probabilities in R</h2>
+<p>The <code>dbinom</code> function in R evaluates the binomial formula above it takes in arguments <code>x</code>,<code>size</code> and <code>prob</code>. For our purposes <code>x</code> refers to <span class="math inline">\(k\)</span>, <code>size</code> refers to <span class="math inline">\(n\)</span> and <code>prob</code> refers to <span class="math inline">\(p\)</span>.</p>
+<p>So if I wanted the probability of seeing 5 heads in 10 fair coin tosses I would evaluate</p>
+<pre class="r"><code>dbinom(x=5,size=10,prob=1/2)</code></pre>
+<pre><code>## [1] 0.2460938</code></pre>
+<p>The <code>choose</code> function on the other hand simply evaluates <span class="math inline">\(\binom{n}{k}=\frac{n!}{(n-k)!k!}\)</span> (The function takes arguments <code>n</code> and <code>k</code> as in the formula). So if I wanted to evaluate the same probability I could do:</p>
+<pre class="r"><code># the same probability as above
+
+choose(10,5) * (0.5)^(5) * (1-0.5)^(10-5)</code></pre>
+<pre><code>## [1] 0.2460938</code></pre>
+<p>This is clearly more tedious and the choose function should really only be used if you need to use choose specifically.</p>
+<div id="an-interlude-on-the-binomial-coefficient" class="section level3">
+<h3>An interlude on the binomial coefficient</h3>
+<p>$   $ read “n choose k” is a special value in combinatorics which is the number of ways to choose an unordered subset of <span class="math inline">\(k\)</span> elements from a set of size <span class="math inline">\(n\)</span>. For instance the number of teams of 3 people I can make from 9 people total is <span class="math inline">\(\binom{9}{3}=84\)</span> (check with R!).</p>
+</div>
+</div>
+</div>
+<div id="r-markdown" class="section level1">
+<h1>5 R Markdown</h1>
+<p>R Markdown is one of my favorite tools. If you’ve been to my section or to my office hours you’ve seen me use it since I don’t usually code within R scripts. In fact this document is written in R markdown. Working within chunks allows for easily organized code and reproducibility. In addition all the math here is embedded via LaTex, a very popular way to type complicated math. As usual I recommend never working in the console except for specific instances of execution of R code.</p>
 </div>
 
 
