@@ -3,8 +3,8 @@ title: "A continuing overview of STAT 20 R"
 author: "JE Hug"
 date: "9/16/2020"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -311,4 +311,56 @@ $\binom{n}{k} \equiv \frac{n!}{(n-k)!k!}$ read "n choose k" is a special value i
 
 # 5 R Markdown 
 
-R Markdown is one of my favorite tools. If you've been to my section or to my office hours you've seen me use it since I don't usually code within R scripts. In fact this document is written in R markdown. Working within chunks allows for easily organized code and reproducibility. In addition all the math here is embedded via LaTex, a very popular way to type complicated math. As usual I recommend never working in the console except for specific instances of execution of R code.
+R Markdown is one of my favorite tools. If you've been to my section or to my office hours you've seen me use it since I don't usually code within R scripts. In fact this document is written in R markdown. Working within chunks allows for easily organized code and reproducibility. In addition all the math here is embedded via LaTex, a very popular way to type complicated math. As usual I recommend never working in the console except for specific instances of execution of R code. The best way to learn R Markdown (like R in general) is to just play around with it and figure out what works. You probably need a local LaTex installation to knit to pdf, but you all should be able to knit to html without that. 
+
+
+# 6 The Law of Averages (or why I prefer the law of large numbers)
+
+If you were to google the Law of Averages you'd note that in actuality it is not a mathematical statement. My background is more mathematical statistics therefore in general I try to be more accurate with you all about actual statements about probability. For full context I've never been taught the law of averages, so I will try and convert it into language that I find more familiar and more accurate.\ 
+
+As stated in class we have generally that for a generic binary (the outcome is a success or failure) we have that 
+
+1) # successes = Expected # of successes + Chance Error
+
+The chance error is kind of the "randomness" for instance I'll flip fair coin 100 times and print out the chance error 
+
+```{r}
+flips <- rbinom(1,100,0.5)
+flips-50
+```
+
+So our chance error is what is returned. Now I'm going to make a statement about the general trend of this chance error, but we always need to be careful about these statements because in reality (mathematically) all of these statements only actually hold asymptotically (when we are at infinity). As we increase the sample size (aka the number of trials here) we should **expect** a larger absolute chance error. Now this doesn't mean that we will see it, it's entirely possible not but we should expect to.
+
+```{r}
+flips2 <- rbinom(1,10000,0.5)
+flips2-5000
+```
+
+So we've seen that the chance error is bigger like we'd expect. This should make sense since we are doing a lot of trials there is potential for things to go wrong. 
+
+2) % successes = Expected % of successes + % chance error
+
+This is the much more meaningful in my opinion because it is equivalent to, letting $n$ denote the sample size
+
+2*) $\frac{\text{# Successes}}{n} = \frac{\text{Expected # of successes}}{n} + \frac{\text{Chance error}}{n}$
+
+One should note that all three numerator terms are functions of $n$. 
+
+
+But as we take $n$ to be larger we should **expect** to get smaller, since the probability of being far from the expected # of successes becomes smaller. If the sample size goes to infinity this is an application of the law of large numbers, which states that we expect any sample average to converge to the actual expected value (with some regularity conditions).
+
+Note that as long as we can group into failures or successes, this can work so even if we have 3 outcomes and we look at one outcome as a success then we can adapt with this binary model, as everything but a subset to be a failure and the subset is the success effectively creating a binary problem.
+
+
+
+
+
+# 7 Standard error, standard deviation, expected value, mean, average ...
+
+
+
+
+
+
+
+
