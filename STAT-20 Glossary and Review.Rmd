@@ -3,8 +3,8 @@ title: "A continuing overview of STAT 20 R"
 author: "JE Hug"
 date: "9/16/2020"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -342,7 +342,7 @@ So we've seen that the chance error is bigger like we'd expect. This should make
 
 This is the much more meaningful in my opinion because it is equivalent to, letting $n$ denote the sample size
 
-2*) $\frac{\text{# Successes}}{n} = \frac{\text{Expected # of successes}}{n} + \frac{\text{Chance error}}{n}$
+2) $\frac{\text{\# Successes}}{n} = \frac{\text{Expected \# of successes}}{n} + \frac{\text{Chance error}}{n}$
 
 One should note that all three numerator terms are functions of $n$. 
 
@@ -355,7 +355,10 @@ Note that as long as we can group into failures or successes, this can work so e
 
 
 
+
 # 7 Standard error, standard deviation, expected value, mean, average ...
+
+
 
 
 
