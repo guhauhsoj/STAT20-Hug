@@ -309,6 +309,16 @@ This is clearly more tedious and the choose function should really only be used 
 
 $\binom{n}{k} \equiv \frac{n!}{(n-k)!k!}$ read "n choose k" is a special value in combinatorics which is the number of ways to choose an unordered subset of $k$ elements from a set of size $n$. For instance the number of teams of 3 people I can make from 9 people total is $\binom{9}{3}=84$ (check with R!). 
 
+## 4.4 The difference between rbinom, dbinom and pbinom
+
+This is copy pasted from a piazza response I wrote recently so hopefully this helps!
+
+`dbinom(x=k,size=s,prob=p)` literally just evaluates the binomial formula $\binom{s}{k}p^k(1-p)^{s-k}$. So we use this when we want the probability of some binomial random variable. If X is a binomial random variable with probability of success $p$ and $s$ number of trials, then the probability of $k$ successes is given by this or $P(X=k)$.
+
+`pbinom(q=k,size=s,prob=p)` evaluates a sum of binomial probabilities ( a sum of `dbinom`) for all values **less than or equal** to k. So in this case `pbinom(k,s,p)=sum(dbinom(c(0:k),s,p))`. So similar set up to dbinom we have that this gives the probability of having anywhere from $0$ to $k$ successes, out of $s$ trials each with probability of success $p$, or $P(X \leq k)$.
+
+The two above functions have evaluated the probability of seeing certain events, however `rbinom` is used to generate events or sample. Essentially R is flipping coins for us and then giving us the results. Take the simplest example `rbinom( n=1 , size=1, prob=1/2)` this will return either 1 or 0 with probability $\frac{1}{2}$, this is the result of a single coin flip with heads returning 1 and tails returning 0. If we want a sum of say $s$ coin flips we can change this to `rbinom(n=1,size=s,prob=1/2)`. This returns a number between $0$ and $s$ representing the number of times the coin landed heads. Finally suppose I wanted to run $z$ experiments where in each experiment I flip $s$ coins, this is given by `rbinom(n=z, size=s, prob= 1/2)` where this returns a vector of length $z$ where each entry is the number of heads in flipping $s$ coins. The only parameter I haven't mentioned is prob which is just the probability of seeing a heads (a 1). Therefore we can change this to anything we want and have `rbinom(n=z, size=s, prob= p)` which is telling R, to flip $s$ coins each with probability of heads $p$ record the number of heads, then repeat this $z$ times and return a vector with the results.
+
 # 5 R Markdown 
 
 R Markdown is one of my favorite tools. If you've been to my section or to my office hours you've seen me use it since I don't usually code within R scripts. In fact this document is written in R markdown. Working within chunks allows for easily organized code and reproducibility. In addition all the math here is embedded via LaTex, a very popular way to type complicated math. As usual I recommend never working in the console except for specific instances of execution of R code. The best way to learn R Markdown (like R in general) is to just play around with it and figure out what works. You probably need a local LaTex installation to knit to pdf, but you all should be able to knit to html without that. 
@@ -320,7 +330,7 @@ If you were to google the Law of Averages you'd note that in actuality it is not
 
 As stated in class we have generally that for a generic binary (the outcome is a success or failure) we have that 
 
-1) # successes = Expected # of successes + Chance Error
+1) \# successes = Expected # of successes + Chance Error
 
 The chance error is kind of the "randomness" for instance I'll flip fair coin 100 times and print out the chance error 
 
@@ -356,7 +366,15 @@ Note that as long as we can group into failures or successes, this can work so e
 
 
 
-# 7 Standard error, standard deviation, expected value, mean, average ...
+# 7 Random Variables
+
+# 8 Expected Value and Standard error
+
+# 9 The box model is a special case of a random variable
+
+# 10 The normal approximation (the central limit theorem)
+
+Coming soon! (sorry have been very busy)
 
 
 

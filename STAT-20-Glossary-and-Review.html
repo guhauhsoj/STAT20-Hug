@@ -567,10 +567,57 @@ choose(10,5) * (0.5)^(5) * (1-0.5)^(10-5)</code></pre>
 <p><span class="math inline">\(\binom{n}{k} \equiv \frac{n!}{(n-k)!k!}\)</span> read “n choose k” is a special value in combinatorics which is the number of ways to choose an unordered subset of <span class="math inline">\(k\)</span> elements from a set of size <span class="math inline">\(n\)</span>. For instance the number of teams of 3 people I can make from 9 people total is <span class="math inline">\(\binom{9}{3}=84\)</span> (check with R!).</p>
 </div>
 </div>
+<div id="the-difference-between-rbinom-dbinom-and-pbinom" class="section level2">
+<h2>4.4 The difference between rbinom, dbinom and pbinom</h2>
+<p>This is copy pasted from a piazza response I wrote recently so hopefully this helps!</p>
+<p><code>dbinom(x=k,size=s,prob=p)</code> literally just evaluates the binomial formula <span class="math inline">\(\binom{s}{k}p^k(1-p)^{s-k}\)</span>. So we use this when we want the probability of some binomial random variable. If X is a binomial random variable with probability of success <span class="math inline">\(p\)</span> and <span class="math inline">\(s\)</span> number of trials, then the probability of <span class="math inline">\(k\)</span> successes is given by this or <span class="math inline">\(P(X=k)\)</span>.</p>
+<p><code>pbinom(q=k,size=s,prob=p)</code> evaluates a sum of binomial probabilities ( a sum of <code>dbinom</code>) for all values <strong>less than or equal</strong> to k. So in this case <code>pbinom(k,s,p)=sum(dbinom(c(0:k),s,p))</code>. So similar set up to dbinom we have that this gives the probability of having anywhere from <span class="math inline">\(0\)</span> to <span class="math inline">\(k\)</span> successes, out of <span class="math inline">\(s\)</span> trials each with probability of success <span class="math inline">\(p\)</span>, or <span class="math inline">\(P(X \leq k)\)</span>.</p>
+<p>The two above functions have evaluated the probability of seeing certain events, however <code>rbinom</code> is used to generate events or sample. Essentially R is flipping coins for us and then giving us the results. Take the simplest example <code>rbinom( n=1 , size=1, prob=1/2)</code> this will return either 1 or 0 with probability <span class="math inline">\(\frac{1}{2}\)</span>, this is the result of a single coin flip with heads returning 1 and tails returning 0. If we want a sum of say <span class="math inline">\(s\)</span> coin flips we can change this to <code>rbinom(n=1,size=s,prob=1/2)</code>. This returns a number between <span class="math inline">\(0\)</span> and <span class="math inline">\(s\)</span> representing the number of times the coin landed heads. Finally suppose I wanted to run <span class="math inline">\(z\)</span> experiments where in each experiment I flip <span class="math inline">\(s\)</span> coins, this is given by <code>rbinom(n=z, size=s, prob= 1/2)</code> where this returns a vector of length <span class="math inline">\(z\)</span> where each entry is the number of heads in flipping <span class="math inline">\(s\)</span> coins. The only parameter I haven’t mentioned is prob which is just the probability of seeing a heads (a 1). Therefore we can change this to anything we want and have <code>rbinom(n=z, size=s, prob= p)</code> which is telling R, to flip <span class="math inline">\(s\)</span> coins each with probability of heads <span class="math inline">\(p\)</span> record the number of heads, then repeat this <span class="math inline">\(z\)</span> times and return a vector with the results.</p>
+</div>
 </div>
 <div id="r-markdown" class="section level1">
 <h1>5 R Markdown</h1>
-<p>R Markdown is one of my favorite tools. If you’ve been to my section or to my office hours you’ve seen me use it since I don’t usually code within R scripts. In fact this document is written in R markdown. Working within chunks allows for easily organized code and reproducibility. In addition all the math here is embedded via LaTex, a very popular way to type complicated math. As usual I recommend never working in the console except for specific instances of execution of R code.</p>
+<p>R Markdown is one of my favorite tools. If you’ve been to my section or to my office hours you’ve seen me use it since I don’t usually code within R scripts. In fact this document is written in R markdown. Working within chunks allows for easily organized code and reproducibility. In addition all the math here is embedded via LaTex, a very popular way to type complicated math. As usual I recommend never working in the console except for specific instances of execution of R code. The best way to learn R Markdown (like R in general) is to just play around with it and figure out what works. You probably need a local LaTex installation to knit to pdf, but you all should be able to knit to html without that.</p>
+</div>
+<div id="the-law-of-averages-or-why-i-prefer-the-law-of-large-numbers" class="section level1">
+<h1>6 The Law of Averages (or why I prefer the law of large numbers)</h1>
+<p>If you were to google the Law of Averages you’d note that in actuality it is not a mathematical statement. My background is more mathematical statistics therefore in general I try to be more accurate with you all about actual statements about probability. For full context I’ve never been taught the law of averages, so I will try and convert it into language that I find more familiar and more accurate. </p>
+<p>As stated in class we have generally that for a generic binary (the outcome is a success or failure) we have that</p>
+<ol style="list-style-type: decimal">
+<li># successes = Expected # of successes + Chance Error</li>
+</ol>
+<p>The chance error is kind of the “randomness” for instance I’ll flip fair coin 100 times and print out the chance error</p>
+<pre class="r"><code>flips &lt;- rbinom(1,100,0.5)
+flips-50</code></pre>
+<pre><code>## [1] -4</code></pre>
+<p>So our chance error is what is returned. Now I’m going to make a statement about the general trend of this chance error, but we always need to be careful about these statements because in reality (mathematically) all of these statements only actually hold asymptotically (when we are at infinity). As we increase the sample size (aka the number of trials here) we should <strong>expect</strong> a larger absolute chance error. Now this doesn’t mean that we will see it, it’s entirely possible not but we should expect to.</p>
+<pre class="r"><code>flips2 &lt;- rbinom(1,10000,0.5)
+flips2-5000</code></pre>
+<pre><code>## [1] -1</code></pre>
+<p>So we’ve seen that the chance error is bigger like we’d expect. This should make sense since we are doing a lot of trials there is potential for things to go wrong.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>% successes = Expected % of successes + % chance error</li>
+</ol>
+<p>This is the much more meaningful in my opinion because it is equivalent to, letting <span class="math inline">\(n\)</span> denote the sample size</p>
+<ol start="2" style="list-style-type: decimal">
+<li><span class="math inline">\(\frac{\text{\# Successes}}{n} = \frac{\text{Expected \# of successes}}{n} + \frac{\text{Chance error}}{n}\)</span></li>
+</ol>
+<p>One should note that all three numerator terms are functions of <span class="math inline">\(n\)</span>.</p>
+<p>But as we take <span class="math inline">\(n\)</span> to be larger we should <strong>expect</strong> to get smaller, since the probability of being far from the expected # of successes becomes smaller. If the sample size goes to infinity this is an application of the law of large numbers, which states that we expect any sample average to converge to the actual expected value (with some regularity conditions).</p>
+<p>Note that as long as we can group into failures or successes, this can work so even if we have 3 outcomes and we look at one outcome as a success then we can adapt with this binary model, as everything but a subset to be a failure and the subset is the success effectively creating a binary problem.</p>
+</div>
+<div id="random-variables" class="section level1">
+<h1>7 Random Variables</h1>
+</div>
+<div id="expected-value-and-standard-error" class="section level1">
+<h1>8 Expected Value and Standard error</h1>
+</div>
+<div id="the-box-model-is-a-special-case-of-a-random-variable" class="section level1">
+<h1>9 The box model is a special case of a random variable</h1>
+</div>
+<div id="the-normal-approximation-the-central-limit-theorem" class="section level1">
+<h1>10 The normal approximation (the central limit theorem)</h1>
+<p>Coming soon! (sorry have been very busy)</p>
 </div>
 
 
