@@ -396,11 +396,10 @@ Besides that most of the problems we have worked with so far can be expressed as
 
 # 8 Expected Value and Standard error
 
+When dealing with random variables (and box models), we know that we have distributions. These completely characterize the distribution, however they are a lot of information and we want to be able to know some elements of the distribution without these. 
 
 
-# 9 The box model is a special case of a random variable
-
-# 10 The normal approximation (the central limit theorem)
+# 9 The normal approximation (the central limit theorem)
 
 Coming soon! (sorry have been very busy)
 
