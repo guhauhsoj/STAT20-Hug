@@ -3,8 +3,8 @@ title: "A continuing overview of STAT 20 R"
 author: "JE Hug"
 date: "9/16/2020"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -396,18 +396,35 @@ Besides that most of the problems we have worked with so far can be expressed as
 
 # 8 Expected Value and Standard error
 
-When dealing with random variables (and box models), we know that we have distributions. These completely characterize the distribution, however they are a lot of information and we want to be able to know some elements of the distribution without these. 
+When dealing with random variables (and box models), we know that we have distributions. These completely characterize the distribution, however they are a lot of information and we want to be able to know some elements of the distribution without these. Therefore oftentimes we are able to use summary statistics in order to better understand random variables. For now we are only really considering discrete random variables  (these variables take on a finite^[This should really say countable] number of values) rather than continuous random variables that take on any real number in a specific interval. The binomial for instance can only take on values from 0 to $n$, by contrast the normal distribution random variables can take on  any value on the real line. The definitions are given below, consider some discrete random variable $X$ that takes on values of $\mathcal{X}$, then we have that 
+
+\[\mathbb{E}(X)=\sum_{x\in\mathcal{X}}x\cdot P(X=x)  \].
+
+This sum can be infinite, and just sums over all values taken on by $X$. The standard error is given by 
+
+\[SE(X)=\sqrt{\sum_{x \in \mathcal{X}}(x-\mathbb{E}(X))^2\cdot P(X=x)} \]
+
+These probably seem rather abstract, but can be interpreted in the exact same way as average and SD can be. The expected value is our best guess as to where the random variable will be at any point, essentially an approximation of the constant. The standard error is how far we expect the random variable to be from its own mean approximated as a constant. Random variables that follow known distributions typically^[some distributions have infinite or undefined moments] have simple formulas for their expectation and standard error. Typically we use the variance or $SE^2$ for convenience since the square root is rather painful to work with mathematically. For the binomial distribution we have computed in lecture that if $X \thicksim bin(n,p)$ then 
+
+\[ \mathbb{E}(X)=np, \ SE(X)= \sqrt{np(1-p)}\]
+
+which aligns exactly with the box model representation of the box model. This is because a box model is a special case of the random variable. Can you think about how to represent the binomial distribution (sum of independent coin flips), as a box model? 
 
 
 # 9 The normal approximation (the central limit theorem)
 
-Coming soon! (sorry have been very busy)
+The Central Limit Theorem is one of the most important probability theorems for the practice of statistics. It essentially guarantees that under certain conditions we can make a decent approximation for any data that we have in the real world. In lecture we spoke about sums of draws from box models as well as the binomial distribution being able to be approximated by the normal distribution. These are again special cases of the actual central limit theorem. Suppose we have many random variables, let all of these have the same distribution and be independent (in the binomial case you can think of each of these as a coin flip). Denote each of these random variables $X_i$, and suppose that $E(X_i)=\mu$ and $SE(X_i)=\sigma<\infty$, since each of these have the same distribution they all have the same expected value and SE. Then the^[well one version] central limit theorem states that if we let $\overline{X}=\frac{1}{n}\sum_{i=1}^n X_i$ then
+
+\[\frac{(\overline X-\mu)}{\sigma/\sqrt{n}}\]
+
+is approximately standard normal distributed. As $n$ gets larger this is a better and better approximation. Note that this uses the fact that the average of random variables $\overline{X}$ has expected value $\mu$ and standard error $\sigma/\sqrt{n}$. The reason why this is useful is that we use sums of random variables all the time, and we know very well how to work with sums of random variables.
 
 
 
+# 10 Confidence Intervals
 
 
-
+Coming soon!
 
 
 
