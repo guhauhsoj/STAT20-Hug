@@ -1,0 +1,75 @@
+---
+title: "T vs Z"
+author: "JE Hug"
+date: "11/9/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+Take a look at some quantiles of the normal vs the t (at various df), to see how far we have to go to get 97.5% area of the curve 
+
+```{r}
+
+# 10 df
+
+qt(0.975, df = 10)
+
+# 30 df
+
+qt(0.975, df = 30)
+
+# 100 df
+
+qt(0.975, df = 100)
+
+# finally the standard normal
+
+qnorm(0.975)
+
+```
+
+
+
+```{r}
+
+
+library(ggplot2)
+
+p1 <- ggplot(data.frame(x = c(-4, 4)), aes(x = x)) +
+  stat_function(fun = dnorm, aes(colour = "normal")) +
+  stat_function(fun = dt, args = list(df = 10), aes(colour = "t 10 df")) +
+  scale_colour_manual("Distribution", values = c("red", "blue"))
+
+p1
+```
+
+
+```{r}
+
+
+p2 <- ggplot(data.frame(x = c(-4, 4)), aes(x = x)) +
+  stat_function(fun = dnorm, aes(colour = "normal")) +
+  stat_function(fun = dt, args = list(df = 30), aes(colour = "t 30 df")) +
+  scale_colour_manual("Distribution", values = c("red", "blue"))
+
+p2
+```
+
+
+
+```{r}
+
+
+p3 <- ggplot(data.frame(x = c(-4, 4)), aes(x = x)) +
+  stat_function(fun = dnorm, aes(colour = "normal")) +
+  stat_function(fun = dt,
+                args = list(df = 100),
+                aes(colour = "t 100 df")) +
+  scale_colour_manual("Distribution", values = c("red", "blue"))
+
+p3
+```
+
+

@@ -420,9 +420,53 @@ The Central Limit Theorem is one of the most important probability theorems for 
 is approximately standard normal distributed. As $n$ gets larger this is a better and better approximation. Note that this uses the fact that the average of random variables $\overline{X}$ has expected value $\mu$ and standard error $\sigma/\sqrt{n}$. The reason why this is useful is that we use sums of random variables all the time, and we know very well how to work with sums of random variables.
 
 
+THIS IS BROKEN FIX THIS 
+
+
+A brief illustration using a simulation is given below, the binomial distribution is a prime example for this since by definition it is a sum of binary trials.
+
+Let's focus on a fair coin flip.
+
+```{r}
+
+reps <- data.frame(rep = dbinom(1:10,size=1,))
+
+ggplot(reps, aes(x = rep)) +
+  geom_histogram() +
+  labs(c = "result of flips", title = "Histogram of a single coin flip result")
+```
+
+This does not look very normally distributed right? But this is because this is not yet a normal distribution, we don't have a sum as each is only 1 coin flip. Let's try a sum of 10 coin flips.
+
+
+
+```{r}
+
+reps <- data.frame(rep = rbinom(1000, size = 10, prob = 0.5))
+
+ggplot(reps, aes(x = rep)) +
+  labs(c = "result of flips", title = "Histogram of a ten coin flip result")+
+  stat_function(fun = dnorm, args = list(mean = mean(5), sd = sqrt(10)*0.5))
+```
+This is beginning to look more promising already. Let's increase to 25 and then to 1000, I'll also begin overlaying normal curves onto the graphs.
+
+
+
+
+
 
 # 10 Confidence Intervals
 
+This is going to be a rather technical section, and will expand upon my section notes. Therefore this section will serve as mathematical motivation for normal (that is Gaussian) confidence intervals. We were told in lecture that a $95%$ confidence interval is formed with 
+
+Statistic $\pm$ $2\cdot SE$, but why is this so?
+
+For now let's focus on situations where either the number of draws from a box is large (we have a large sample) for now lets say this is more than 100, or we know the SD of the box. The latter rarely happens but it does in certain hypothesis testing scenarios. If these do not hold we need to modify our confidence interval to account for the uncertainty in estimating the SD. 
+
+
+
+
+# 11 Hypothesis Testing & p-values
 
 Coming soon!
 
