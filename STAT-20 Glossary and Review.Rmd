@@ -3,7 +3,8 @@ title: "A continuing overview of STAT 20 R"
 author: "JE Hug"
 date: "9/16/2020"
 output:
-  html_document: default
+  html_document: 
+    download_code: true
   pdf_document: default
 ---
 
@@ -419,57 +420,86 @@ The Central Limit Theorem is one of the most important probability theorems for 
 
 is approximately standard normal distributed. As $n$ gets larger this is a better and better approximation. Note that this uses the fact that the average of random variables $\overline{X}$ has expected value $\mu$ and standard error $\sigma/\sqrt{n}$. The reason why this is useful is that we use sums of random variables all the time, and we know very well how to work with sums of random variables.
 
+# 10.1 Scatter plots and linear regression
 
-THIS IS BROKEN FIX THIS 
-
-
-A brief illustration using a simulation is given below, the binomial distribution is a prime example for this since by definition it is a sum of binary trials.
-
-Let's focus on a fair coin flip.
+Sorry this is so delayed but this will be rather brief, but this post was mainly focused on R anyway. First some notes on linear regression in R. We can obtain a regression in R with the syntax `lm(y~x)`, where we wish to predict $y$ from $x$. Here lm stands for linear model. This is an example from my section where I emphasize that the lines for predicting each variable from the other are different. So essentially we cannot use either line to go "backwards". Note both lines intersect at the mean of both variables since that point is on both regression lines.
 
 ```{r}
+library(palmerpenguins)
+library(ggplot2)
 
-reps <- data.frame(rep = dbinom(1:10,size=1,))
+dat <- na.omit(penguins)
 
-ggplot(reps, aes(x = rep)) +
-  geom_histogram() +
-  labs(c = "result of flips", title = "Histogram of a single coin flip result")
+lin_mod <-lm(bill_length_mm~flipper_length_mm,data=dat)
+
+
+ggplot(dat, aes(x=bill_length_mm,y=flipper_length_mm))+
+  geom_point()+
+  geom_smooth(method="lm", se= F)+
+  geom_abline(intercept=7.2185580/0.2548, slope=1/0.2548, color="red")
 ```
 
-This does not look very normally distributed right? But this is because this is not yet a normal distribution, we don't have a sum as each is only 1 coin flip. Let's try a sum of 10 coin flips.
+
+Building on our earlier ggplot syntax, we are just telling R to do a scatter plot with `geom_point`. Then `geom_smooth(method = "lm", se = F)` tells ggplot to plot a line based on the linear model and not to show standard error bars. If we omit the standard error option we get
 
 
 
 ```{r}
-
-reps <- data.frame(rep = rbinom(1000, size = 10, prob = 0.5))
-
-ggplot(reps, aes(x = rep)) +
-  labs(c = "result of flips", title = "Histogram of a ten coin flip result")+
-  stat_function(fun = dnorm, args = list(mean = mean(5), sd = sqrt(10)*0.5))
+ggplot(dat, aes(x=bill_length_mm,y=flipper_length_mm))+
+  geom_point()+
+  geom_smooth(method="lm")+ # tnote omitted SE=FALSE here
+  geom_abline(intercept=7.2185580/0.2548, slope=1/0.2548, color="red")
 ```
-This is beginning to look more promising already. Let's increase to 25 and then to 1000, I'll also begin overlaying normal curves onto the graphs.
+
+Where the grey bars are actually SE from the line. If we omit the `method="lm"` call ggplot by default will fit a non straight line with a method known as LOESS, much beyond the scope of this course but good to know.
+
+```{r}
+ggplot(dat, aes(x=bill_length_mm,y=flipper_length_mm))+
+  geom_point()+
+  geom_smooth()+ # note omitted SE=FALSE here, and method = "lm"
+  geom_abline(intercept=7.2185580/0.2548, slope=1/0.2548, color="red")
+```
+
+Clearly not a straight line.
+
+# 10.2 How do I get the regression line in R?
+
+This is a very simple call to the `lm` function for this. 
+
+```{r}
+# I omit the missing data (bad practice for actual analysis)
+
+dat <- na.omit(penguins)
+```
+
+Suppose I wish to predict flipper length from bill length, the code for this regression line is simple.
+
+```{r}
+myfit <- lm(formula = flipper_length_mm ~ bill_length_mm, data = dat)
+
+myfit
+```
 
 
 
+This just returns the intercept and the slope of the line, pretty simple. For more complicated output we can take a look at the summary call of this regression.
 
+```{r}
+summary(myfit)
+```
 
+This is a lot more complicated, and has some info that may confuse you. In the coefficients section we have the estimates column, these are the values for the slope and intercept of the line that we saw before. The next 3 columns are important for hypothesis testing. The hypothesis test we are performing here is 
 
-# 10 Confidence Intervals
+$H_0$: Slope $=0$
 
-This is going to be a rather technical section, and will expand upon my section notes. Therefore this section will serve as mathematical motivation for normal (that is Gaussian) confidence intervals. We were told in lecture that a $95%$ confidence interval is formed with 
+$H_1$: Slope $\neq 0$
 
-Statistic $\pm$ $2\cdot SE$, but why is this so?
+as well as 
 
-For now let's focus on situations where either the number of draws from a box is large (we have a large sample) for now lets say this is more than 100, or we know the SD of the box. The latter rarely happens but it does in certain hypothesis testing scenarios. If these do not hold we need to modify our confidence interval to account for the uncertainty in estimating the SD. 
+$H_0$: intercept $=0$
 
+$H_1$: intercept $\neq 0$
 
-
-
-# 11 Hypothesis Testing & p-values
-
-Coming soon!
-
-
+Note these are what we call two sided tests, not what we have done so far, but the interpretation is the same. Why are we interested in these tests? Well we want to see if we have a slope that is actually significantly different from 0, because if not there is no use for the line in predicting one from the other. The second column is the Standard error, and the third column is the t statistic value. We know how to calculate both of these. The final column is the p-value, here both are very small so we reject the null that the slope and intercept are 0. There is more info later on in the summary but it is most likely a bit beyond the scope of this course. In this simple case however the "Multiple R-squared" is just the correlation between the two variables squared.
 
 
