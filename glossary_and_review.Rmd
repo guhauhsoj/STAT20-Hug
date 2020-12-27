@@ -3,9 +3,9 @@ title: "A continuing overview of STAT 20 R"
 author: "JE Hug"
 date: "9/16/2020"
 output:
+  pdf_document: default
   html_document: 
     download_code: true
-  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
